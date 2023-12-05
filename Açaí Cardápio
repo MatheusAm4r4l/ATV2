@@ -1,0 +1,325 @@
+<html> 
+    <head>
+         <title> Lista 07/11/2023 </title></head> 
+         <style>
+      
+                table{
+                -o-table-baseline: center;
+                width: 600px;
+                background-color: rgb(96, 36, 119);;
+                background-size: cover;
+                border-radius: 10px;
+                min-height: 200px;
+                min-width: 100px;
+                box-shadow: 0 4px 8px 0 rgba(158, 13, 163, 0.822),
+                        0 2px 20px 0 rgba(85, 6, 92, 0.822);
+
+            }
+            table td:first-child button{
+                color: rgb(13, 14, 13);
+            }
+            table td:last-child button{
+                color: red;
+            }
+            td{
+                width: 50%;
+                padding: 5px;
+                vertical-align: top;
+            }
+            .produto.disp{
+                border: 1px solid rgb(0, 0, 0);
+            }
+            .produto.sele{
+                border: 1px solid rgb(0, 0, 0);
+            }
+            .produto{
+                margin-top: 3px;
+                padding: 5px 3px 11px 5px;
+                border-radius: 3px;
+                background-color: #b4149f;
+            }
+            .produto>.nome{
+                margin-top: -3px;
+                position: absolute;
+            }
+            .produto>.estoque{
+                color:#ffffff;
+                font-size: 10px;
+            }
+            .produto>.valor{
+                color:#000;
+                font-size: 10px;
+                float: right;
+                margin-top: 3px;
+            }
+            .bt_add{
+                font-size: 10px;
+                color: rgb(198, 247, 23);
+                float: right;
+                margin-top: -10px;
+                padding-top: 2px;
+                cursor: pointer;
+            }
+            .bt_remov{
+                font-size: 10px;
+                color: rgb(60, 255, 0);
+                float: right;
+                margin-top: -10px;
+                padding-top: 2px;
+                cursor: pointer;
+            }
+            #total{
+                text-align: right;
+                font-size: 19px;
+                font-style: italic;
+                
+                
+            }
+         </style>
+    <body> 
+      
+      <h3>Monte seu AÇAÍ</h3> 
+        
+        <table border="1">
+            <tr>
+                <td> Adicionais </td>
+                <td> Selecionado </td>
+            </tr>
+            <tr>
+                <td id="disponiveis"> </td>
+                <td id="selecionados">  </td>
+            </tr>
+            <tr>
+                <td> </td>
+                <td id="total">  </td>
+            </tr>
+        </table>
+
+        <script>
+            var el_td_disp  = document.getElementById('disponiveis');
+            var el_td_sele  = document.getElementById('selecionados');
+            var el_td_total = document.getElementById('total');
+            var el_bts_disp, el_bts_sele;
+            var arr_produtos_base = 
+             [ {  'id':1, 
+                 'nom':"Copo de 200ml", // nome
+                 'vlr': 10.00,   // valor
+                 'stq': 10     // Estoque
+               },
+               {  'id':2, 
+                 'nom':"Copo de 400ml", // nome
+                 'vlr': 14.00,   // valor
+                 'stq': 10     // Estoque
+               },
+               {  'id':3, 
+                 'nom':"Copo de 800ml", // nome
+                 'vlr': 18.00,   // valor
+                 'stq': 10     // Estoque
+               },
+               {  'id':4, 
+                 'nom':"Balde de 2L", // nome
+                 'vlr': 36.00,   // valor
+                 'stq': 10    // Estoque
+               },
+               {  'id':5, 
+                 'nom':"Balde de 5L", // nome
+                 'vlr': 75.00,   // valor
+                 'stq': 10     // Estoque
+               },
+               {  'id':6, 
+                 'nom':"Leite em Pó", // nome
+                 'vlr': 4.59,   // valor
+                 'stq': 100    // Estoque
+               },
+               {  'id':7, 
+                 'nom':"Nutella", // nome
+                 'vlr': 4.99,   // valor
+                 'stq': 100     // Estoque
+               },
+               {  'id':8, 
+                 'nom':"Doce De Leite", // nome
+                 'vlr': 4.99,   // valor
+                 'stq': 100     // Estoque
+               },
+               {  'id':9, 
+                 'nom':"Mumu", // nome
+                 'vlr': 4.99,   // valor
+                 'stq': 100     // Estoque
+               },
+               {  'id':10, 
+                 'nom':"paçoca", // nome
+                 'vlr': 2.99,   // valor
+                 'stq': 100     // Estoque
+               },
+               {  'id':11, 
+                 'nom':"M&Ms", // nome
+                 'vlr': 2.99,   // valor
+                 'stq': 100     // Estoque
+               },
+               {  'id':12, 
+                 'nom':"Jujuba", // nome
+                 'vlr': 2.99,   // valor
+                 'stq': 100     // Estoque
+               },
+               {  'id':13, 
+                 'nom':"Morango", // nome
+                 'vlr': 3.99,   // valor
+                 'stq': 100     // Estoque
+               },
+               {  'id':14, 
+                 'nom':"Banana", // nome
+                 'vlr': 3.99,   // valor
+                 'stq': 100     // Estoque
+               },
+               {  'id':15, 
+                 'nom':"Abacaxi", // nome
+                 'vlr': 3.99,   // valor
+                 'stq': 100     // Estoque
+               },
+               {  'id':16, 
+                 'nom':"Kiwi", // nome
+                 'vlr': 3.99,   // valor
+                 'stq': 100     // Estoque
+               },
+
+            ];
+            var arr_produtos_sele = [ 
+                // {  'id':7777, 
+                //  'nom':"Manga", // nome
+                //  'vlr': 4.79,   // valor
+                //  'qtd': 123     // Estoque
+                // }    
+            ];
+
+            function clicado_item_dispo( evento_do_clic ){
+                var str_nome_prod = evento_do_clic.target.innerHTML  ;
+                console.log("clicado_item_dispo() = "+str_nome_prod );
+                var indice = arr_produtos_base.indexOf(str_nome_prod)
+                if ( indice != -1 ) {
+                    arr_produtos_sele.push(arr_produtos_base[indice]);
+                    arr_produtos_base.splice(indice,1);
+                }
+
+                preenche_itens_das_listas(); 
+            }
+
+            function clicado_item_sele( evento_do_clic ){
+                var str_nome_prod = evento_do_clic.target.innerHTML;
+                console.log("clicado_item_sele() = "+str_nome_prod );
+                var indice = arr_produtos_sele.indexOf(str_nome_prod)
+                if ( indice != -1 ) {
+                    arr_produtos_base.push(arr_produtos_sele[indice]);
+                    arr_produtos_sele.splice(indice,1);
+                }
+
+                preenche_itens_das_listas(); 
+            }
+
+            function clicado_em_add(obj) 
+            {
+                console.log("clicado_em_add = "+obj.nom+" id:"+obj.id);
+                // correr o arr selecionados para ver se existe
+                var ja_esta_na_lista = -1; // indice da lista
+                for ( var i = 0; i < arr_produtos_sele.length; i++ ) {
+                    if( arr_produtos_sele[i].id == obj.id ){
+                        ja_esta_na_lista = i;
+                    }
+                }
+                if ( ja_esta_na_lista < 0 ) {  // Ainda não existe
+                    arr_produtos_sele.push(  
+                        {  'id':obj.id, 
+                            'nom':obj.nom,
+                            'vlr': obj.vlr,
+                            'qtd': 1     
+                        }
+                    );
+                }
+                else { // já existe
+                    arr_produtos_sele[ja_esta_na_lista].qtd++; 
+                }
+                // Decremetar a base 
+                for ( var i = 0; i < arr_produtos_base.length; i++ ) {
+                    if( arr_produtos_base[i].id == obj.id ){
+                        arr_produtos_base[i].stq --;
+                    }
+                }
+                preenche_itens_das_listas();
+            }
+
+            function clicado_em_remov(obj) 
+            {
+                console.log("clicado_em_remov = "+obj.nom+" id:"+obj.id);
+                // correr o arr selecionados para ver se existe
+                var i = -1;
+                for ( var i = 0; i < arr_produtos_sele.length; i++ ) {
+                    if( arr_produtos_sele[i].id == obj.id ){
+                        break
+                    }
+                }
+                if ( arr_produtos_sele[i].qtd > 1 ) {  // Ainda não existe
+                    arr_produtos_sele[i].qtd--;
+                }
+                else {
+                    arr_produtos_sele.shift(i,1);
+                }
+                // volte base 
+                for ( var i = 0; i < arr_produtos_base.length; i++ ) {
+                    if( arr_produtos_base[i].id == obj.id ){
+                        arr_produtos_base[i].stq ++;
+                    }
+                }
+                preenche_itens_das_listas();
+            }
+            
+            function preenche_itens_das_listas()
+            {
+                console.log("preenche_itens_das_listas()");
+                // DISPONÍVEIS
+                el_td_disp.innerHTML = '';
+                for (let i = 0; i < arr_produtos_base.length; i++) {
+                    var str_tmp = 
+                        "<div class='produto disp'>"+
+                        "   <span class='valor'> R$: "+arr_produtos_base[i].vlr+"</span>"+
+                        "   <div class='nome'>"+arr_produtos_base[i].nom+"</div><br>"+
+                        "   <span class='estoque'> Estoque: "+arr_produtos_base[i].stq+"</span><br>";
+                    if ( Number(arr_produtos_base[i].stq)>0 ) {
+                        str_tmp+=
+                        "   <button onclick='clicado_em_add("+JSON.stringify(arr_produtos_base[i])+")' class='bt_add'>+</button>";
+                    }
+
+                    str_tmp +="</div>";
+                    el_td_disp.innerHTML+= str_tmp;
+                }
+                
+                // SELECIONADOS
+                el_td_sele.innerHTML = '';
+                var total = 0;
+                for (let i = 0; i < arr_produtos_sele.length; i++) {
+                    var sub_total = Number(arr_produtos_sele[i].qtd*arr_produtos_sele[i].vlr)
+                    total+=sub_total;
+                    el_td_sele.innerHTML +=
+                        "<div class='produto sele'>"+
+                        "   <span class='valor'> R$: "+arr_produtos_sele[i].vlr+"</span>"+
+                        "   <div class='nome'>"+arr_produtos_sele[i].nom+"</div><br>"+
+                        "   <span class='estoque'> Quatidade: "+arr_produtos_sele[i].qtd+"</span><br>"+
+                        "   <span class='estoque'> Sub total: R$"+sub_total.toFixed(2)+"</span><br>"+
+                        "   <button onclick='clicado_em_remov("+JSON.stringify(arr_produtos_sele[i])+")' class='bt_remov'>-</button>"+
+                        "</div>";
+                }
+                el_td_total.innerHTML = total > 0 
+                    ? "Total: R$ "+total.toFixed(2)
+                    : "Vazio";
+                
+            }
+            
+            preenche_itens_das_listas();
+            
+
+            // el_td_sele.innerHTML+= "<button>Limão2</button><br>";
+            // el_td_sele.innerHTML+= "<button>Limão2</button><br>";
+            // el_td_sele.innerHTML+= "<button>Limão2</button><br>";
+
+        </script>
+
+    </body>
+</html> 
